@@ -1,0 +1,32 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: account-service
+              uri: ${SERVICES_ACCOUNT_URL:http://localhost:8084}
+              predicates:
+                - Path=/api/v1/accounts/**
+
+            - id: telegram-bot-service
+              uri: ${SERVICES_TELEGRAM_URL:http://localhost:8081}
+              predicates:
+                - Path=/api/v1/telegram/**
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+  endpoint:
+    health:
+      probes:
+        enabled: true
